@@ -1,13 +1,20 @@
 function createGameBoard() {
-    let endGame = 0;
+    let tie = 0;
+    let entries = 0;
     const rows = 3;
     const cols = 3;
+
+    const addEntry = () => entries++;
+    const getEntries = () => entries;
+    const tieStatus = () => tie;
+    const gameOver = () => tie++;
+
     let array = Array.from({ length: rows }, () => Array(cols).fill(null));
 
     const reset = function () {
         array = Array.from({ length: rows }, () => Array(cols).fill(null));
     }
-    return {endGame, array, reset};
+    return {array, tieStatus, gameOver, reset, addEntry, getEntries};
 };
 
 const createPlayer = function (playerNum, gameBoard) {
@@ -40,6 +47,7 @@ const createPlayer = function (playerNum, gameBoard) {
             }
             if (gameBoard.array[row][userInput % 3] == null) {
                 gameBoard.array[row][userInput % 3] = marker;
+                gameBoard.addEntry();
                 break;
             }
             else {
@@ -47,7 +55,10 @@ const createPlayer = function (playerNum, gameBoard) {
                 continue;
             }
         }
-        console.log(gameBoard.array);
+        if (gameBoard.getEntries() == 9) {
+            gameBoard.gameOver();
+            console.log("It's a tie!");
+        }
         checkRows();
         checkColumns();
         checkDiagonals();
@@ -105,7 +116,7 @@ const createPlayer = function (playerNum, gameBoard) {
 const playGame = function (gameBoard, player1, player2) {
     let firstPlayer = true;
     
-    while (gameBoard.endGame == 0 && player1.getWinner() == 0 && player2.getWinner() == 0) {
+    while (gameBoard.tieStatus() == 0 && player1.getWinner() == 0 && player2.getWinner() == 0) {
         firstPlayer ? player1.playTurn() : player2.playTurn();
         firstPlayer = !firstPlayer;
     }
