@@ -1,11 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
 }
 
-#display, #grid div {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: large;
+body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    height: 100vh;
+    width: auto;
+    font-family: 'Roboto', sans-serif;
+    background-color: rgb(85, 167, 167);
+    color: white;
+}
+
+#header {
+    font-size: xx-large;
+}
+
+#header, #display {
+    margin: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#display {
+    font-size: x-large;
+}
+
+#restart {
+    font-weight: bold;
+    text-align: center;
+}
+
+#restart:hover {
+    font-weight: bold;
+    text-align: center;
+    color: gray;
+}
+
+.container {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    display: grid;
 }
 
 #grid {
@@ -17,7 +56,20 @@
 }
 
 #grid div {
-    border: 1px solid black;
+    display: grid;
+    align-content: center;
+    font-size: 100px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
+    text-align: center;
+}
+
+#grid div:not(:nth-child(3n)) {
+    border-right: 10px solid darkcyan;
+}
+
+#grid div:not(:nth-last-child(-n+3)) {
+    border-bottom: 10px solid darkcyan;
 }
 
 .row1 {

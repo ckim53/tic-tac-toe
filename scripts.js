@@ -1,31 +1,35 @@
 function createGameBoard(player1, player2) {
-    let tie = 0;
+    let gameOver = 0;
     let entries = 0;
     const rows = 3;
     const cols = 3;
 
     const addEntry = () => entries++;
     const getEntries = () => entries;
-    const tieStatus = () => tie;
-    const gameOver = () => tie++;
 
-    const array = Array.from({ length: rows }, () => Array(cols).fill(null));
-
-    const reset = function () {
-        array = Array.from({ length: rows }, () => Array(cols).fill(null));
-    }
-
-    player1.setTurn();
+    let array = Array.from({ length: rows }, () => Array(cols).fill(null));
     
     const grid = document.getElementById('grid');
     const children = grid.querySelectorAll('div');
+    const display = document.getElementById('display');
     let player = player1;
+
+    const reset = function () {
+        array = Array.from({ length: rows }, () => Array(cols).fill(null));
+        gameOver = 0;
+        entries = 0;
+        player = player1;
+        children.forEach((child) => {child.textContent = ''});
+        display.textContent = "Player 1 Turn";
+    }
+
+    const restart = document.getElementById('restart');
+    restart.addEventListener('click', reset);
 
     children.forEach((child, index) => {
         child.addEventListener('click', function() {
-            player = (player1.getTurn() == 1) ? player1 : player2;
+            if (gameOver) {return};
             const marker = player.getMarker();
-            console.log(`player ${player.num} turn`);
             let row = 0;
             switch (true) {
                 case (index >= 0 && index <= 2):
@@ -42,14 +46,21 @@ function createGameBoard(player1, player2) {
                 console.log(array);
                 array[row][index % 3] = marker;
                 addEntry();
-                console.log("valid spot.");
+                child.style.color = (player == player1) ? "steelblue" : "white";
                 child.textContent = marker;
                 checkBoard();
-                player1.setTurn();
-                player2.setTurn();
+                if(getEntries() == 9 && gameOver == 0) {
+                    display.textContent = "It's a TIE!";
+                    gameOver = 1;
+                    return;
+                }
+                if (gameOver == 0) {
+                    player = (player == player1) ? player2 : player1;
+                    display.textContent = `Player ${player.num} turn`;
+                }
             }
             else {
-                console.log("invalid spot. try again.");
+                display.textContent = "Invalid spot. Try again.";
             }
         });
     });
@@ -66,8 +77,8 @@ function createGameBoard(player1, player2) {
                 j++;
             }
             if (j==3) {
-                player.setWinner();
-                console.log(`Player ${player.num} wins!`);
+                gameOver = 1;
+                display.textContent = `Player ${player.num} WINS!`;
             }
         }
     }
@@ -83,8 +94,8 @@ function createGameBoard(player1, player2) {
             while (array[i][j] == current) {
                 i++;
                 if (i==3) {
-                    player.setWinner();
-                    console.log(`Player ${player.num} wins!`);
+                    gameOver = 1;
+                    display.textContent = `Player ${player.num} WINS!`;
                     return;
                 }
             }
@@ -97,8 +108,8 @@ function createGameBoard(player1, player2) {
             array[1][1] == array[2][2]) ||
             (array[0][2] == array[1][1] && 
             array[1][1] == array[2][0]))) { 
-            player.setWinner();
-            console.log(`Player ${player.num} wins!`);
+            gameOver = 1;
+            display.textContent = `Player ${player.num} WINS!`;
         }
     };
     
@@ -108,29 +119,22 @@ function createGameBoard(player1, player2) {
         checkDiagonals();
     }
 
-    return {array, tieStatus, gameOver, reset, addEntry, getEntries, checkBoard};
+    return {array, reset, addEntry, getEntries, checkBoard};
 }
 
 const createPlayer = function (num) {
-    let winner = 0;
     let turn = 0;
     let marker = (num == 1) ? 'X' : 'O';
     
     const getMarker = () => marker;
-    const getWinner = () => winner;
-    const setWinner = () => winner = 1;
-    const getTurn = () => turn;
-    const setTurn = () => turn = 1 - turn;
 
-    return {getMarker, num, getWinner, setWinner, setTurn, getTurn};
+    return {getMarker, num};
 }
 
 const playGame = function (gameBoard, player1, player2) {
-    while ((gameBoard.tieStatus() == 0) && (player1.getWinner == 0) && (player2.getWinner == 0));
-    console.log("game ended.");
+    
 }
 
 const player1 = createPlayer(1);
 const player2 = createPlayer(2);
 const myGameBoard = createGameBoard(player1, player2);
-playGame(myGameBoard, player1, player2);
