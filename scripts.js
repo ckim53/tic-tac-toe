@@ -43,7 +43,6 @@ function createGameBoard(player1, player2) {
                     break;
             }
             if (array[row][index % 3] == null) {
-                console.log(array);
                 array[row][index % 3] = marker;
                 addEntry();
                 child.style.color = (player == player1) ? "steelblue" : "white";
